@@ -1,0 +1,38 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Chats">
+       <menu>
+           <group
+               android:id="@+id/chats"
+               android:checkableBehavior="single">
+               <item
+                   android:id="@+id/group1"
+                   android:icon="@drawable/baseline_3p_24"
+                   android:title="S.E.E.S特别搜查队" />
+               <item
+                   android:id="@+id/group2"
+                   android:icon="@drawable/baseline_3p_24"
+                   android:title="droidcon-nyc" />
+           </group>
+       </menu>
+    </item>
+
+
+
+    <item android:title="Recent Profiles">
+        <menu>
+            <group
+                android:id="@+id/profiles"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/user1"
+                    android:icon="@drawable/leader"
+                    android:title="makoto(you)" />
+                <item
+                    android:id="@+id/user2"
+                    android:icon="@drawable/ali"
+                    android:title="ali" />
+            </group>
+        </menu>
+
+    </item>
+</menu>
