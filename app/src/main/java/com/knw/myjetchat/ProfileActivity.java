@@ -80,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
                     //这里处理信息列表的切换
                     groupNameTextView.setText(item.getTitle());
                     Intent intent = new Intent(ProfileActivity.this,MainActivity.class);
-                    intent.putExtra("groupName",item.getTitle());
+                    intent.putExtra("groupId",item.getItemId());
                     //因为是去信息界面，所以需要切换到主页了
                     startActivity(intent);
                     drawerLayout.closeDrawers();

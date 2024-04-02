@@ -44,6 +44,37 @@ public class MainActivity extends AppCompatActivity {
         //设置菜单点击事件(要先判断了）
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         navigationView.setCheckedItem(R.id.group1);
+        //加入自定义群组信息
+        View groupToolbarView=getLayoutInflater().inflate(R.layout.group_details,null);
+        // 获取群组信息的TextView
+        TextView groupNameTextView = groupToolbarView.findViewById(R.id.groupName);
+        TextView groupMemberCountTextView = groupToolbarView.findViewById(R.id.groupMemberCount);
+        // 设置群组名称和成员数量(要写到观察里）
+        Group groupTest = new Group("S.E.E.S",42);
+        groupNameTextView.setText("# "+groupTest.getGroupName());
+        groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
+
+
+// 检查是否有数据被传递
+        Intent intent = getIntent();
+        if (intent != null) {
+            // 从Intent中获取数据
+            int value = intent.getIntExtra("groupId",0);
+
+            // 在这里使用接收到的数据
+            if(value!=0)
+            {
+                navigationView.setCheckedItem(value);
+                Menu menu = navigationView.getMenu();
+                MenuItem item = menu.findItem(value);
+                groupTest=new Group(item.getTitle().toString(),42);
+                groupNameTextView.setText("# "+groupTest.getGroupName());
+                groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
+
+            }
+        }
+
+
 
 
 
@@ -54,15 +85,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        //加入自定义群组信息
-        View groupToolbarView=getLayoutInflater().inflate(R.layout.group_details,null);
-        // 获取群组信息的TextView
-        TextView groupNameTextView = groupToolbarView.findViewById(R.id.groupName);
-        TextView groupMemberCountTextView = groupToolbarView.findViewById(R.id.groupMemberCount);
-        // 设置群组名称和成员数量(要写到观察里）
-        Group groupTest = new Group("S.E.E.S",42);
-        groupNameTextView.setText("# "+groupTest.getGroupName());
-        groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
 
         // 获取Toolbar的LayoutParams，并设置布局参数为居中
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.WRAP_CONTENT);
