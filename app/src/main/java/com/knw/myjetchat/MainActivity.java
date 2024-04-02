@@ -41,9 +41,10 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navView);
         navigationView.setItemIconTintList(null);
         navigationView.setItemIconPadding(16);
-        //设置菜单点击事件
+        //设置菜单点击事件(要先判断了）
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         navigationView.setCheckedItem(R.id.group1);
+
 
 
         // 设置状态栏颜色为白色
@@ -55,13 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
         //加入自定义群组信息
         View groupToolbarView=getLayoutInflater().inflate(R.layout.group_details,null);
-
-
         // 获取群组信息的TextView
         TextView groupNameTextView = groupToolbarView.findViewById(R.id.groupName);
         TextView groupMemberCountTextView = groupToolbarView.findViewById(R.id.groupMemberCount);
-
-
         // 设置群组名称和成员数量(要写到观察里）
         Group groupTest = new Group("S.E.E.S",42);
         groupNameTextView.setText("# "+groupTest.getGroupName());
