@@ -24,6 +24,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.knw.myjetchat.logic.model.Group;
 
+//1、需要使用持久化技术完成聊天页面的读取
+//2、对于每次切换，群组真实人数没有做逻辑判断（为了方便统一设，真实情况应该是从id拿title，再从数据库拿真实人数赋值给group对象）
+//3、需要实现悬浮卡片
+//4、需要根据item进入不同的页面，需要把数据抽出来做逻辑判断渲染
+//5、实现聊天界面
 public class MainActivity extends AppCompatActivity {
 
     @Override

@@ -11,7 +11,7 @@
                <item
                    android:id="@+id/group2"
                    android:icon="@drawable/baseline_3p_24"
-                   android:title="droidcon-nyc" />
+                   android:title="タロタロス" />
            </group>
        </menu>
     </item>
@@ -29,8 +29,8 @@
                     android:title="makoto(you)" />
                 <item
                     android:id="@+id/user2"
-                    android:icon="@drawable/ali"
-                    android:title="ali" />
+                    android:icon="@drawable/aiges"
+                    android:title="aiges" />
             </group>
         </menu>
 
