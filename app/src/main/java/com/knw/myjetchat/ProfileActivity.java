@@ -92,6 +92,9 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 return true; }
         });
+       //这边处理数据
+        TextView nameProfile = findViewById(R.id.nameProfile);
+
     }
 
 

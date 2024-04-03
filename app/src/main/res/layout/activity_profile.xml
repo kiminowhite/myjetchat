@@ -10,8 +10,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:orientation="vertical"
-      >
+      android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/profilestoolbar"
@@ -23,148 +22,158 @@
         >
     </androidx.appcompat.widget.Toolbar>
 
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<!--滑动-->
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+  <ImageView
+      android:id="@+id/iconProfile"
+      android:layout_width="match_parent"
+      android:layout_height="250dp"
+      android:src="@drawable/leader"
+      android:scaleType="centerCrop"/>
 
-    <ImageView
-        android:id="@+id/iconSource"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:src="@drawable/leader"
-        android:scaleType="centerCrop"/>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <!-- TextView -->
+    <TextView
+        android:id="@+id/nameProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Makoto Yuki"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:layout_marginTop="16dp"
+        android:paddingStart="15dp"/>
+
+    <!-- ListView -->
+    <ListView
+        android:id="@+id/roles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:listSelector="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:divider="#ffffff"/>
+  </LinearLayout>
+  <include layout="@layout/divider"></include>
 
-      <!-- TextView -->
-      <TextView
-          android:id="@+id/name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Makoto Yuki"
-          android:textStyle="bold"
-          android:textSize="30sp"
-          android:layout_marginTop="16dp"
-          android:paddingStart="15dp"/>
-
-      <!-- ListView -->
-      <ListView
-          android:id="@+id/roles"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:listSelector="@android:color/transparent"
-          android:dividerHeight="0dp"
-          android:divider="#ffffff"/>
-    </LinearLayout>
-    <include layout="@layout/divider"></include>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Display name"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginBottom="4dp">
-      </TextView>
-      <TextView
-          android:id="@+id/displayname"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="结城理"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginTop="4dp"
-          >
-      </TextView>
-
-    </LinearLayout>
-
-    <include layout="@layout/divider"></include>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        android:text="Display name"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginBottom="4dp">
+    </TextView>
+    <TextView
+        android:id="@+id/displayname"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Status"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginBottom="4dp">
-      </TextView>
-      <TextView
-          android:id="@+id/status"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Away"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginTop="4dp"
-          >
-      </TextView>
+        android:text="结城理"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginTop="4dp"
+        >
+    </TextView>
 
-    </LinearLayout>
-    <include layout="@layout/divider"></include>
+  </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+  <include layout="@layout/divider"></include>
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Twitter"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginBottom="4dp">
-      </TextView>
-      <TextView
-          android:id="@+id/twitter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="twitter.com/persona3"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginTop="4dp"
-          android:textColor="@color/blue500"
-          >
-      </TextView>
-
-    </LinearLayout>
-
-    <include layout="@layout/divider"></include>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        android:text="Status"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginBottom="4dp">
+    </TextView>
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Timezone"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginBottom="4dp">
-      </TextView>
-      <TextView
-          android:id="@+id/timezone"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Full moon"
-          android:textAppearance="?android:textAppearanceMedium"
-          android:paddingStart="15dp"
-          android:layout_marginTop="4dp"
-          >
-      </TextView>
+        android:text="Away"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginTop="4dp"
+        >
+    </TextView>
 
-    </LinearLayout>
+  </LinearLayout>
+  <include layout="@layout/divider"></include>
 
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Twitter"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginBottom="4dp">
+    </TextView>
+    <TextView
+        android:id="@+id/twitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="twitter.com/persona3"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/blue500"
+        >
+    </TextView>
 
+  </LinearLayout>
 
+  <include layout="@layout/divider"></include>
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timezone"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginBottom="4dp">
+    </TextView>
+    <TextView
+        android:id="@+id/timezone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Full moon"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:paddingStart="15dp"
+        android:layout_marginTop="4dp">
+    </TextView>
+
+  </LinearLayout>
+<!--最后一个信息的-->
+
+</LinearLayout>
+</ScrollView>
 
   </LinearLayout>
 
