@@ -31,11 +31,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//1、对于每次chat切换，需要使用持久化技术完成聊天页面的读取,每个聊天都有一个list，需要获取真实数据
-//2、对于每次chat切换，群组真实人数没有做逻辑判断（为了方便统一设，真实情况应该是从id拿title，再从数据库拿真实人数赋值给group对象，这里不再实现）
-//3、profile需要实现悬浮卡片
-//4、需要根据聊天头像进入不同的身份信息界面，同时左边的recent也要实现这个功能，要把所有人都加上
-//5、需要实现聊天框其他按钮功能！
+//对于每次chat切换，需要使用持久化技术完成聊天页面的读取,每个聊天都有一个list，需要获取真实数据
+//对于每次chat切换，群组真实人数没有做逻辑判断（为了方便统一设，真实情况应该是从id拿title，再从数据库拿真实人数赋值给group对象，这里不再实现）
+//资料要根据是不是用户本人修改悬浮文本
+//需要根据聊天头像进入不同的身份信息界面，同时左边的recent也要实现这个功能，要把所有人都加上
+//需要实现聊天框其他按钮功能！
 //目前来说，没有用viewmodel，后面要慢慢用上
 public class MainActivity extends AppCompatActivity {
     private List<Msg> msgList =new  ArrayList<Msg>();

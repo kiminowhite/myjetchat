@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.knw.myjetchat.ui.MyListView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
 
      //给list赋值
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.role_item, data);
-       ListView roles = findViewById(R.id.roles);
+     //  ListView roles = findViewById(R.id.roles);
+        MyListView roles= findViewById(R.id.roles);
        roles.setAdapter(adapter);
         //加入自定义群组信息
         View groupToolbarView=getLayoutInflater().inflate(R.layout.group_details,null);

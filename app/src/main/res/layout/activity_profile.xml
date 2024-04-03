@@ -56,13 +56,24 @@
         android:paddingStart="15dp"/>
 
     <!-- ListView -->
-    <ListView
-        android:id="@+id/roles"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:listSelector="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:divider="#ffffff"/>
+<!--    <ListView-->
+<!--        android:id="@+id/roles"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:listSelector="@android:color/transparent"-->
+<!--        android:dividerHeight="0dp"-->
+<!--        android:divider="#ffffff"/>-->
+<com.knw.myjetchat.ui.MyListView
+    android:id="@+id/roles"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:listSelector="@android:color/transparent"
+    android:divider="#ffffff"
+    android:dividerHeight="0dp">
+
+</com.knw.myjetchat.ui.MyListView>
+
+
   </LinearLayout>
   <include layout="@layout/divider"></include>
 
@@ -173,9 +184,20 @@
 <!--最后一个信息的-->
 
 </LinearLayout>
+
 </ScrollView>
 
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_done" />
+
   </LinearLayout>
+
 
   <com.google.android.material.navigation.NavigationView
       android:id="@+id/navView"
