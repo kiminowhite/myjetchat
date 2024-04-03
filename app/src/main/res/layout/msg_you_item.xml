@@ -1,0 +1,52 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+<de.hdodenhof.circleimageview.CircleImageView
+    android:id="@+id/iconYouMsg"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:src="@drawable/leader"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:civ_border_width="2dp"
+    app:civ_border_color="#FF000000">
+</de.hdodenhof.circleimageview.CircleImageView>
+
+    <TextView
+        android:id="@+id/nameYouMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_toRightOf="@id/iconYouMsg"
+        android:layout_marginLeft="15dp"
+        android:text="マコト"
+        android:gravity="bottom"
+        android:textStyle="bold"
+        android:textSize="15dp">
+    </TextView>
+    <TextView
+        android:id="@+id/sendYouDataMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_toRightOf="@id/nameYouMsg"
+        android:text="8:04PM"
+        android:textSize="10dp"
+        android:layout_marginLeft="5dp"
+        android:gravity="bottom">
+    </TextView>
+    <TextView
+        android:id="@+id/textYouMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iconYouMsg"
+        android:layout_below="@id/nameYouMsg"
+        android:layout_marginLeft="15dp"
+
+        android:background="@drawable/textview_you_style"
+        android:textColor="@color/white"
+        android:text="Full Moon Full life">
+
+    </TextView>
+</RelativeLayout>

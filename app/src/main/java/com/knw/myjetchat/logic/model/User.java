@@ -4,6 +4,7 @@ package com.knw.myjetchat.logic.model;
 import java.util.List;
 import java.util.TimeZone;
 
+//后续需要添加userid去做页面跳转资料的判断
 public class User {
     private String name;
     private String displayName;

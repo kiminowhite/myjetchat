@@ -8,28 +8,61 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.knw.myjetchat.logic.model.Group;
+import com.knw.myjetchat.logic.model.Msg;
+import com.knw.myjetchat.ui.message.MsgAdapter;
 
-//1、需要使用持久化技术完成聊天页面的读取
-//2、对于每次切换，群组真实人数没有做逻辑判断（为了方便统一设，真实情况应该是从id拿title，再从数据库拿真实人数赋值给group对象）
-//3、需要实现悬浮卡片
-//4、需要根据item进入不同的页面，需要把数据抽出来做逻辑判断渲染
-//5、实现聊天界面
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+//1、对于每次chat切换，需要使用持久化技术完成聊天页面的读取,每个聊天都有一个list，需要获取真实数据
+//2、对于每次chat切换，群组真实人数没有做逻辑判断（为了方便统一设，真实情况应该是从id拿title，再从数据库拿真实人数赋值给group对象，这里不再实现）
+//3、profile需要实现悬浮卡片
+//4、需要根据聊天头像进入不同的身份信息界面，同时左边的recent也要实现这个功能，要把所有人都加上
+//5、需要实现聊天框其他按钮功能！
+//目前来说，没有用viewmodel，后面要慢慢用上
 public class MainActivity extends AppCompatActivity {
+    private List<Msg> msgList =new  ArrayList<Msg>();
+    private void initMsg()
+    {
+        Msg msg1= new Msg("从今以后，我也会一直守护你",Msg.TYPE_RECEIVED,R.drawable.aiges,new Date(),"アイギス");
+        Msg msg2= new Msg("我爱蛋白粉",Msg.TYPE_RECEIVED,R.drawable.akihiko,new Date(),"明彦");
+        Msg msg3=new Msg("...",Msg.TYPE_RECEIVED,R.drawable.aragaki,new Date(),"荒垣");
+        Msg msg4=new Msg("来，该吃饭了",Msg.TYPE_RECEIVED,R.drawable.fuuka,new Date(),"風花");
+        Msg msg5= new Msg("原神，启动",Msg.TYPE_RECEIVED,R.drawable.junpei,new Date(),"淳平");
+        Msg msg6= new Msg("谁家小孩",Msg.TYPE_RECEIVED,R.drawable.ken,new Date(),"天田");
+        Msg msg7=new Msg("ワンワン",Msg.TYPE_RECEIVED,R.drawable.koromaru,new Date(),"コロマル");
+        Msg msg8=new Msg("来学习吧",Msg.TYPE_RECEIVED,R.drawable.mitsuru,new Date(),"美鶴");
+        Msg msg9=new Msg("还想再见你",Msg.TYPE_RECEIVED,R.drawable.yukari,new Date(),"由加莉");
+        Msg msg10 =new Msg("孩子们，我回来了",Msg.TYPE_SENT,R.drawable.leader,new Date(),"結城　理");
+
+        msgList.add(msg1);
+        msgList.add(msg2);
+        msgList.add(msg3);
+        msgList.add(msg4);
+        msgList.add(msg5);
+        msgList.add(msg6);
+        msgList.add(msg7);
+        msgList.add(msg8);
+        msgList.add(msg9);
+        msgList.add(msg10);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,6 +75,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+        initMsg();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView messagesRecyclerView =findViewById(R.id.messages);
+        messagesRecyclerView.setLayoutManager(layoutManager);
+        MsgAdapter adapter = new MsgAdapter(msgList);
+        messagesRecyclerView.setAdapter(adapter);
+        Button send = findViewById(R.id.sendButton);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText inputText = findViewById(R.id.inputText);
+                String content = inputText.getText().toString();
+                if(!content.isEmpty())
+                {
+                    Msg msg = new Msg(content,Msg.TYPE_SENT,R.drawable.leader,new Date(),"結城　理");
+                    // 添加新消息到msgList
+                    msgList.add(msg);
+
+                    if (adapter != null) {
+                        adapter.notifyItemInserted(msgList.size() - 1);
+                    }
+                      RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+                    messagesRecyclerView.scrollToPosition(msgList.size() - 1);
+
+                    inputText.setText("");
+
+                }
+            }
+        });
+
         //头像正常显示
         NavigationView navigationView = findViewById(R.id.navView);
         navigationView.setItemIconTintList(null);
@@ -55,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         TextView groupNameTextView = groupToolbarView.findViewById(R.id.groupName);
         TextView groupMemberCountTextView = groupToolbarView.findViewById(R.id.groupMemberCount);
         // 设置群组名称和成员数量(要写到观察里）
-        Group groupTest = new Group("S.E.E.S",42);
+        Group groupTest = new Group("S.E.E.S",10);
         groupNameTextView.setText("# "+groupTest.getGroupName());
         groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
 
@@ -72,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 navigationView.setCheckedItem(value);
                 Menu menu = navigationView.getMenu();
                 MenuItem item = menu.findItem(value);
-                groupTest=new Group(item.getTitle().toString(),42);
+                groupTest=new Group(item.getTitle().toString(),10);
                 groupNameTextView.setText("# "+groupTest.getGroupName());
                 groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
 

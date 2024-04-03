@@ -2,6 +2,7 @@ package com.knw.myjetchat.logic.model;
 
 import java.util.Date;
 
+//后续需要完善跳转个人信息页面，同时profile也要加上每个人的item
 public class Msg {
     private String content;
     private int type;
