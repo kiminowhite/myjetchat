@@ -9,12 +9,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -30,21 +35,25 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.knw.myjetchat.logic.model.Group;
 import com.knw.myjetchat.logic.model.Msg;
+import com.knw.myjetchat.logic.model.User;
+import com.knw.myjetchat.ui.fragment.EmojiSheetDialogFragment;
 import com.knw.myjetchat.ui.message.MsgAdapter;
 
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
-//对于每次chat切换，需要使用持久化技术完成聊天页面的读取,每个聊天都有一个list，需要获取真实数据
-//对于每次chat切换，群组真实人数没有做逻辑判断（为了方便统一设，真实情况应该是从id拿title，再从数据库拿真实人数赋值给group对象，这里不再实现）
-//资料要根据是不是用户本人修改悬浮文本
-//需要根据聊天头像进入不同的身份信息界面，同时左边的recent也要实现这个功能，要把所有人都加上
-//需要实现聊天框其他按钮功能！
+
+//资料要根据是不是用户本人修改悬浮文本，实现了，但是没有灵活搜信息
 //目前来说，没有用viewmodel，后面要慢慢用上
+
+//需要实现聊天框其他按钮功能
+
 public class MainActivity extends AppCompatActivity {
     private List<Msg> msgList =new  ArrayList<Msg>();
     private String fileGroupName;
@@ -211,11 +220,42 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.closeDrawers();
                     return true;
                 } else if (item.getGroupId() == R.id.profiles) {
+                    //去之前，传输真实信息。这里只做一个
+                    if(item.getItemId()==R.id.user2)
+                    {
+                        //真实情况应该是从数据库拿item列表，然后item列表的id代表一个对象的id，再去查相应对象的真实信息
+                        User user = new User("Aiges","アイギス", Arrays.asList("Robot","Angel"),
+                                "Alive","twitter.com/aiges", TimeZone.getTimeZone("Asia/Tokyo"),R.drawable.aiges);
 
-                    startActivity(new Intent(MainActivity.this,ProfileActivity.class));
-                    return false;
+                        Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                        intent.putExtra("profile",user);
+                        startActivity(intent);
+
+                        return  false;
+                    }
+                    if(item.getItemId()==R.id.user1)
+                    {
+                        //真实情况应该是从数据库拿item列表，然后item列表的id代表一个对象的id，再去查相应对象的真实信息
+                        User user = new User("Makoto","結城　理", Arrays.asList("Hero","Leader"),"Away","twitter.com/makoto", TimeZone.getTimeZone("Asia/Tokyo"),R.drawable.leader);
+                        Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                        intent.putExtra("profile",user);
+                        startActivity(intent);
+
+                        return  false;
+                    }
+
                 }
                 return true; }
+        });
+
+        Button button1 = findViewById(R.id.button1);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EmojiSheetDialogFragment bottomSheetDialogFragment = new EmojiSheetDialogFragment();
+                bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+
+            }
         });
 
 
@@ -226,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     //关闭activity时，将聊天记录储存到本地
         //1、获取群组名称，生成相应的文件名
-
         System.out.println(fileGroupName);
         SharedPreferences.Editor editor = getSharedPreferences(fileGroupName, Context.MODE_PRIVATE).edit();
         //当前list信息列表转换为json
@@ -250,6 +289,12 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
+        if(item.getItemId()==R.id.serach)
+        {
+            Toast.makeText(this,"你点击了搜索",Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

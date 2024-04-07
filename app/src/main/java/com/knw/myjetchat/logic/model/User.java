@@ -1,18 +1,19 @@
 
 package com.knw.myjetchat.logic.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.TimeZone;
 
 //后续需要添加userid去做页面跳转资料的判断
-public class User {
+public class User  implements Serializable {
     private String name;
     private String displayName;
     private List<String> roles;
     private String status;
     private String twitter;
     private TimeZone timeZone;
-    private String iconSource;
+    private Integer iconSource;
 
     public String getName() {
         return name;
@@ -62,11 +63,21 @@ public class User {
         this.timeZone = timeZone;
     }
 
-    public String getIconSource() {
+    public Integer getIconSource() {
         return iconSource;
     }
 
-    public void setIconSource(String iconSource) {
+    public void setIconSource(Integer iconSource) {
+        this.iconSource = iconSource;
+    }
+
+    public User(String name, String displayName, List<String> roles, String status, String twitter, TimeZone timeZone, Integer iconSource) {
+        this.name = name;
+        this.displayName = displayName;
+        this.roles = roles;
+        this.status = status;
+        this.twitter = twitter;
+        this.timeZone = timeZone;
         this.iconSource = iconSource;
     }
 }

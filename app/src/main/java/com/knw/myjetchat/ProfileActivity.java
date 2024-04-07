@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,8 +26,10 @@ import com.google.android.material.navigation.NavigationView;
 import com.knw.myjetchat.logic.model.User;
 import com.knw.myjetchat.ui.MyListView;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -63,11 +66,32 @@ public class ProfileActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_jetchat);
         }
 
-     //给list赋值
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.role_item, data);
-     //  ListView roles = findViewById(R.id.roles);
-        MyListView roles= findViewById(R.id.roles);
-       roles.setAdapter(adapter);
+        Intent intent = getIntent();
+        if(intent!=null)
+        {
+            User profile = (User)intent.getSerializableExtra("profile");
+            ImageView imageView = findViewById(R.id.iconProfile);
+            TextView nameProfile=findViewById(R.id.nameProfile);
+            MyListView roles=findViewById(R.id.roles);
+            TextView displayname=findViewById(R.id.displayname);
+            TextView status =findViewById(R.id.status);
+            TextView twitter =findViewById(R.id.twitter);
+            TextView timezone =findViewById(R.id.timezone);
+
+            imageView.setImageResource(profile.getIconSource());
+            nameProfile.setText(profile.getName());
+            displayname.setText(profile.getDisplayName());
+            status.setText(profile.getStatus());
+            twitter.setText(profile.getTwitter());
+            roles.setAdapter( new ArrayAdapter<>(this, R.layout.role_item, profile.getRoles()));
+            timezone.setText("Asia/Tokyo");
+
+
+        }
+
+
+
+
         //加入自定义群组信息
         View groupToolbarView=getLayoutInflater().inflate(R.layout.group_details,null);
 
@@ -84,22 +108,39 @@ public class ProfileActivity extends AppCompatActivity {
                     groupNameTextView.setText(item.getTitle());
                     Intent intent = new Intent(ProfileActivity.this,MainActivity.class);
                     intent.putExtra("groupId",item.getItemId());
-                    //因为是去信息界面，所以需要切换到主页了
+                    //防止原有activity还存在
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                     drawerLayout.closeDrawers();
                     return true;
                 } else if (item.getGroupId() == R.id.profiles) {
 
-                    startActivity(new Intent(ProfileActivity.this,ProfileActivity.class));
-                    finish();
+                    if(item.getItemId()==R.id.user2)
+                    {
+                        //真实情况应该是从数据库拿item列表，然后item列表的id代表一个对象的id，再去查相应对象的真实信息
+                        User user = new User("Aiges","アイギス", Arrays.asList("Robot","Angel"),
+                                "Alive","twitter.com/aiges", TimeZone.getTimeZone("Asia/Tokyo"),R.drawable.aiges);
 
-                    return false;
+                        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
+                        intent.putExtra("profile",user);
+                        startActivity(intent);
+                        finish();
+                        return  false;
+                    }
+                    if(item.getItemId()==R.id.user1)
+                    {
+                        //真实情况应该是从数据库拿item列表，然后item列表的id代表一个对象的id，再去查相应对象的真实信息
+                        User user = new User("Makoto","結城　理", Arrays.asList("Hero","Leader"),"Away","twitter.com/makoto", TimeZone.getTimeZone("Asia/Tokyo"),R.drawable.leader);
+                        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
+                        intent.putExtra("profile",user);
+                        startActivity(intent);
+                        finish();
+                        return  false;
+                    }
                 }
                 return true; }
         });
-       //这边处理数据
-        TextView nameProfile = findViewById(R.id.nameProfile);
 
     }
 

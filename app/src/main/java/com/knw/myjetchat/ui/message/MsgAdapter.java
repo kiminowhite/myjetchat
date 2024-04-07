@@ -1,5 +1,6 @@
 package com.knw.myjetchat.ui.message;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,13 +8,19 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.knw.myjetchat.MainActivity;
+import com.knw.myjetchat.MyApplication;
+import com.knw.myjetchat.ProfileActivity;
 import com.knw.myjetchat.R;
 import com.knw.myjetchat.logic.model.Msg;
+import com.knw.myjetchat.logic.model.User;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -35,10 +42,36 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         View view;
         if (viewType == Msg.TYPE_RECEIVED) {
             view = inflater.inflate(R.layout.msg_other_item, parent, false);
-            return new OtherViewHolder(view);
+            OtherViewHolder viewHolder = new OtherViewHolder(view);
+            viewHolder.iconOtherMsg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    User user = new User("Aiges","アイギス", Arrays.asList("Robot","Angel"),
+                            "Alive","twitter.com/aiges", TimeZone.getTimeZone("Asia/Tokyo"),R.drawable.aiges);
+                    Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+                    intent.putExtra("profile",user);
+                    v.getContext().startActivity(intent);
+                }
+            });
+
+            return viewHolder;
         } else {
             view = inflater.inflate(R.layout.msg_you_item, parent, false);
-            return new YouViewHolder(view);
+            YouViewHolder viewHolder =new YouViewHolder(view);
+            viewHolder.iconYouMsg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //真实情况应该是从拿item的id去数据库查信息,封装到repositroy中
+                   // int position = viewHolder.getAdapterPosition();
+                   // Msg msg = msgList.get(position);
+                   // String senderName = msg.getSenderName();
+                    User user = new User("Makoto","結城　理", Arrays.asList("Hero","Leader"),"Away","twitter.com/makoto", TimeZone.getTimeZone("Asia/Tokyo"),R.drawable.leader);
+                    Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+                    intent.putExtra("profile",user);
+                   v.getContext().startActivity(intent);
+                }
+            });
+            return viewHolder;
         }
     }
 
