@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.knw.myjetchat.logic.model.User;
 import com.knw.myjetchat.ui.MyListView;
 
 import java.util.Arrays;
@@ -85,11 +86,14 @@ public class ProfileActivity extends AppCompatActivity {
                     intent.putExtra("groupId",item.getItemId());
                     //因为是去信息界面，所以需要切换到主页了
                     startActivity(intent);
+                    finish();
                     drawerLayout.closeDrawers();
                     return true;
                 } else if (item.getGroupId() == R.id.profiles) {
 
                     startActivity(new Intent(ProfileActivity.this,ProfileActivity.class));
+                    finish();
+
                     return false;
                 }
                 return true; }
@@ -110,4 +114,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    //刷新信息
+    private  void refreshProfile()
+    {
+
+    }
+
 }

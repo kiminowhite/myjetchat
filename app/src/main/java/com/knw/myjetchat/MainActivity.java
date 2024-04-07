@@ -1,9 +1,13 @@
 package com.knw.myjetchat;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,14 +26,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.knw.myjetchat.logic.model.Group;
 import com.knw.myjetchat.logic.model.Msg;
 import com.knw.myjetchat.ui.message.MsgAdapter;
 
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 //对于每次chat切换，需要使用持久化技术完成聊天页面的读取,每个聊天都有一个list，需要获取真实数据
 //对于每次chat切换，群组真实人数没有做逻辑判断（为了方便统一设，真实情况应该是从id拿title，再从数据库拿真实人数赋值给group对象，这里不再实现）
@@ -39,10 +47,11 @@ import java.util.List;
 //目前来说，没有用viewmodel，后面要慢慢用上
 public class MainActivity extends AppCompatActivity {
     private List<Msg> msgList =new  ArrayList<Msg>();
+    private String fileGroupName;
     private void initMsg()
     {
         Msg msg1= new Msg("从今以后，我也会一直守护你",Msg.TYPE_RECEIVED,R.drawable.aiges,new Date(),"アイギス");
-        Msg msg2= new Msg("我爱蛋白粉",Msg.TYPE_RECEIVED,R.drawable.akihiko,new Date(),"明彦");
+     /*   Msg msg2= new Msg("我爱蛋白粉",Msg.TYPE_RECEIVED,R.drawable.akihiko,new Date(),"明彦");
         Msg msg3=new Msg("...",Msg.TYPE_RECEIVED,R.drawable.aragaki,new Date(),"荒垣");
         Msg msg4=new Msg("来，该吃饭了",Msg.TYPE_RECEIVED,R.drawable.fuuka,new Date(),"風花");
         Msg msg5= new Msg("原神，启动",Msg.TYPE_RECEIVED,R.drawable.junpei,new Date(),"淳平");
@@ -51,17 +60,11 @@ public class MainActivity extends AppCompatActivity {
         Msg msg8=new Msg("来学习吧",Msg.TYPE_RECEIVED,R.drawable.mitsuru,new Date(),"美鶴");
         Msg msg9=new Msg("还想再见你",Msg.TYPE_RECEIVED,R.drawable.yukari,new Date(),"由加莉");
         Msg msg10 =new Msg("孩子们，我回来了",Msg.TYPE_SENT,R.drawable.leader,new Date(),"結城　理");
+*/
 
         msgList.add(msg1);
-        msgList.add(msg2);
-        msgList.add(msg3);
-        msgList.add(msg4);
-        msgList.add(msg5);
-        msgList.add(msg6);
-        msgList.add(msg7);
-        msgList.add(msg8);
-        msgList.add(msg9);
-        msgList.add(msg10);
+
+
     }
 
     @Override
@@ -76,35 +79,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
-        initMsg();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        RecyclerView messagesRecyclerView =findViewById(R.id.messages);
-        messagesRecyclerView.setLayoutManager(layoutManager);
-        MsgAdapter adapter = new MsgAdapter(msgList);
-        messagesRecyclerView.setAdapter(adapter);
+
         Button send = findViewById(R.id.sendButton);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText inputText = findViewById(R.id.inputText);
-                String content = inputText.getText().toString();
-                if(!content.isEmpty())
-                {
-                    Msg msg = new Msg(content,Msg.TYPE_SENT,R.drawable.leader,new Date(),"結城　理");
-                    // 添加新消息到msgList
-                    msgList.add(msg);
 
-                    if (adapter != null) {
-                        adapter.notifyItemInserted(msgList.size() - 1);
-                    }
-                      RecyclerView messagesRecyclerView = findViewById(R.id.messages);
-                    messagesRecyclerView.scrollToPosition(msgList.size() - 1);
-
-                    inputText.setText("");
-
-                }
-            }
-        });
 
         //头像正常显示
         NavigationView navigationView = findViewById(R.id.navView);
@@ -118,13 +95,9 @@ public class MainActivity extends AppCompatActivity {
         // 获取群组信息的TextView
         TextView groupNameTextView = groupToolbarView.findViewById(R.id.groupName);
         TextView groupMemberCountTextView = groupToolbarView.findViewById(R.id.groupMemberCount);
-        // 设置群组名称和成员数量(要写到观察里）
-        Group groupTest = new Group("S.E.E.S",10);
-        groupNameTextView.setText("# "+groupTest.getGroupName());
-        groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
 
-
-// 检查是否有数据被传递
+        Group groupTest = new Group("S.E.E.S特别搜查队",10);
+//      检查是否有群组名称数据被传递
         Intent intent = getIntent();
         if (intent != null) {
             // 从Intent中获取数据
@@ -139,12 +112,64 @@ public class MainActivity extends AppCompatActivity {
                 groupTest=new Group(item.getTitle().toString(),10);
                 groupNameTextView.setText("# "+groupTest.getGroupName());
                 groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
+                fileGroupName=groupTest.getGroupName();
 
             }
+
+            groupNameTextView.setText("# "+groupTest.getGroupName());
+            groupMemberCountTextView.setText(groupTest.getGroupMemberCount().toString()+" memebers");
+            fileGroupName=groupTest.getGroupName();
+        }
+
+
+        //判断文件是否为空，为空直接初始化
+        SharedPreferences prefs = getSharedPreferences(fileGroupName, Context.MODE_PRIVATE);
+        Map<String, ?> allEntries = prefs.getAll();
+        boolean b =allEntries.isEmpty();
+
+        if (allEntries.isEmpty()) {
+            // SharedPreferences文件为空，即文件不存在
+           initMsg();
+        } else {
+            // SharedPreferences文件不为空，文件存在且包含键值对
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<Msg>>() {}.getType();
+         String json = prefs.getString("msgList","");
+           List<Msg> msgList = gson.fromJson(json, listType);
+           this.msgList=msgList;
+
         }
 
 
 
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView messagesRecyclerView =findViewById(R.id.messages);
+        messagesRecyclerView.setLayoutManager(layoutManager);
+        MsgAdapter adapter = new MsgAdapter(msgList);
+        messagesRecyclerView.setAdapter(adapter);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText inputText = findViewById(R.id.inputText);
+                String content = inputText.getText().toString();
+                if(!content.isEmpty())
+                {
+                    Msg msg = new Msg(content,Msg.TYPE_SENT,R.drawable.leader,new Date(),"結城　理");
+                    // 添加新消息到msgList
+                    msgList.add(msg);
+
+                    if (adapter != null) {
+                        adapter.notifyItemInserted(msgList.size() - 1);
+                    }
+                    RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+                    messagesRecyclerView.scrollToPosition(msgList.size() - 1);
+
+                    inputText.setText("");
+
+                }
+            }
+        });
 
 
         // 设置状态栏颜色为白色
@@ -178,7 +203,11 @@ public class MainActivity extends AppCompatActivity {
                 if (item.getGroupId() == R.id.chats) {
                     //这里处理信息列表的切换
                     groupNameTextView.setText(item.getTitle());
-
+                    //重启是因为要获取新的信息列表
+                    Intent intent = new Intent(MainActivity.this,MainActivity.class);
+                    intent.putExtra("groupId",item.getItemId());
+                     startActivity(intent);
+                     finish();
                     drawerLayout.closeDrawers();
                     return true;
                 } else if (item.getGroupId() == R.id.profiles) {
@@ -193,6 +222,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    //关闭activity时，将聊天记录储存到本地
+        //1、获取群组名称，生成相应的文件名
+
+        System.out.println(fileGroupName);
+        SharedPreferences.Editor editor = getSharedPreferences(fileGroupName, Context.MODE_PRIVATE).edit();
+        //当前list信息列表转换为json
+        Gson gson = new Gson();
+        String json = gson.toJson(msgList);
+        System.out.println(json);
+      //存储信息
+       editor.putString("msgList",json);
+       editor.apply();
+
+    }
+
+
+
+
+
+        @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         if (item.getItemId() == android.R.id.home) {
