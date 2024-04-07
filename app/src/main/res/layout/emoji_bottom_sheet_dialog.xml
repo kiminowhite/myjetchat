@@ -5,15 +5,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="This is a Bottom Sheet Dialog"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"/>
+
 
     <!-- Add more views here as needed -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/emojis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

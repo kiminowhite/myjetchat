@@ -1,21 +1,15 @@
 package com.knw.myjetchat;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,13 +24,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.knw.myjetchat.logic.model.Group;
 import com.knw.myjetchat.logic.model.Msg;
 import com.knw.myjetchat.logic.model.User;
-import com.knw.myjetchat.ui.fragment.EmojiSheetDialogFragment;
+import com.knw.myjetchat.ui.fragment.EmojiBottomSheetDialogFragment;
 import com.knw.myjetchat.ui.message.MsgAdapter;
 
 
@@ -252,10 +247,11 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EmojiSheetDialogFragment bottomSheetDialogFragment = new EmojiSheetDialogFragment();
+                EmojiBottomSheetDialogFragment bottomSheetDialogFragment = new EmojiBottomSheetDialogFragment();
                 bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
-
             }
+
+
         });
 
 
@@ -296,5 +292,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void addEmojiToEditText(String emoji) {
+        // 将 Emoji 添加到 EditText 中
+        EditText editText = findViewById(R.id.inputText);
+         editText.append(emoji);
     }
 }
