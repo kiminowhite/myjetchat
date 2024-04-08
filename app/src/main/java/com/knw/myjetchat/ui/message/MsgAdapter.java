@@ -86,7 +86,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             OtherViewHolder otherHolder = (OtherViewHolder) holder;
             otherHolder.iconOtherMsg.setImageResource(msg.getIconId());
             otherHolder.nameOtherMsg.setText(msg.getSenderName());
-            otherHolder.sendOtherDataMsg.setText(msg.getTimestamp().toString());
+            otherHolder.sendOtherDataMsg.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(msg.getTimestamp()));
             otherHolder.textOtherMsg.setText(msg.getContent());
             otherHolder.textOtherMsg.setVisibility(View.VISIBLE);
             otherHolder.imgOtherMsg.setVisibility(View.GONE);
@@ -112,7 +112,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             YouViewHolder youHolder = (YouViewHolder) holder;
             youHolder.iconYouMsg.setImageResource(msg.getIconId());
             youHolder.nameYouMsg.setText(msg.getSenderName());
-            youHolder.sendYouDataMsg.setText(msg.getTimestamp().toString());
+            youHolder.sendYouDataMsg.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(msg.getTimestamp()));
             youHolder.textYouMsg.setText(msg.getContent());
             youHolder.textYouMsg.setVisibility(View.VISIBLE);
             youHolder.imgYouMsg.setVisibility(View.GONE);

@@ -152,6 +152,7 @@ return  msgList;
         if (allEntries.isEmpty()) {
             // SharedPreferences文件为空，即文件不存在
             initMsg();
+            System.out.println("初始化！");
         } else {
             // SharedPreferences文件不为空，文件存在且包含键值对
             Gson gson = new Gson();
@@ -160,6 +161,7 @@ return  msgList;
             String json = prefs.getString("msgList", "");
             List<Msg> loadmsgList = gson.fromJson(json, listType);
             msgList.addAll(loadmsgList);
+            System.out.println("已经读取成功！");
         }
     }
 });
@@ -402,6 +404,22 @@ return  msgList;
         EditText editText = findViewById(R.id.inputText);
         editText.append(emoji);
     }
+public  void addStickerMsg(Integer stickerId)
+{
+    LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+    messagesRecyclerView.setLayoutManager(layoutManager);
+    MsgAdapter adapter = new MsgAdapter(msgList);
+    messagesRecyclerView.setAdapter(adapter);
+    //发送图片
+    Msg msg = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", stickerId);
+    msgList.add(msg);
+    if (adapter != null) {
+        adapter.notifyItemInserted(msgList.size() - 1);
+    }
+     messagesRecyclerView = findViewById(R.id.messages);
+    messagesRecyclerView.scrollToPosition(msgList.size() - 1);
+}
 
     public void addAtToEditText(String at) {
         EditText editText = findViewById(R.id.inputText);

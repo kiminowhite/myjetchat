@@ -6,6 +6,8 @@
     android:padding="16dp">
 
 
+
+
     <!-- 按钮布局 -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +16,7 @@
 
         <!-- 第一个按钮 -->
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/emojipick"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -23,7 +25,7 @@
 
         <!-- 第二个按钮 -->
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/stickpick"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
