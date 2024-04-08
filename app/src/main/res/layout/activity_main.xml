@@ -32,6 +32,7 @@
 
 
             <include layout="@layout/chatbar"></include>
+
         </LinearLayout>
     </LinearLayout>
 

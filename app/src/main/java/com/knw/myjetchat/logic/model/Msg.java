@@ -10,15 +10,19 @@ public class Msg {
     private Date timestamp;
     private String senderName;
 
+    private Integer imgSourceId;
+
+
     public static final int TYPE_RECEIVED = 0;
     public static final int TYPE_SENT = 1;
 
-    public Msg(String content, int type, int iconId, Date timestamp, String senderName) {
+    public Msg(String content, int type, int iconId, Date timestamp, String senderName,Integer imgSourceId) {
         this.content = content;
         this.type = type;
         this.iconId = iconId;
         this.timestamp = timestamp;
         this.senderName = senderName;
+        this.imgSourceId = imgSourceId;
     }
 
     public String getContent() {
@@ -60,4 +64,9 @@ public class Msg {
     public void setSenderName(String senderName) {
         this.senderName = senderName;
     }
-}
+
+    public Integer getImgSourceId(){return imgSourceId;}
+    public void setImgSourceId(Integer imgSourceId){this.imgSourceId=imgSourceId;}
+
+
+    }

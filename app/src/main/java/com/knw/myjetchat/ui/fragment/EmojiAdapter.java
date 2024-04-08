@@ -1,4 +1,4 @@
-package com.knw.myjetchat.ui;
+package com.knw.myjetchat.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;

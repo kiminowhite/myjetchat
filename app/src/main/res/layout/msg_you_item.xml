@@ -36,17 +36,37 @@
         android:layout_marginLeft="5dp"
         android:gravity="bottom">
     </TextView>
-    <TextView
-        android:id="@+id/textYouMsg"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/iconYouMsg"
         android:layout_below="@id/nameYouMsg"
-        android:layout_marginLeft="15dp"
-
         android:background="@drawable/textview_you_style"
-        android:textColor="@color/white"
-        android:text="Full Moon Full life">
+        android:layout_marginLeft="15dp"
+        android:orientation="vertical">
+        <TextView
+            android:visibility="visible"
+            android:id="@+id/textYouMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_you_style"
+            android:textColor="@color/white"
+            android:text=""
+            android:layout_marginEnd="10dp">
+        </TextView>
+        <ImageView
+            android:id="@+id/imgYouMsg"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </ImageView>
 
-    </TextView>
+
+    </LinearLayout>
+
 </RelativeLayout>

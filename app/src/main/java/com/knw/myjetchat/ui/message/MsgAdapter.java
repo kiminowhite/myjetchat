@@ -1,9 +1,13 @@
 package com.knw.myjetchat.ui.message;
 
+
+
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -84,12 +88,52 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             otherHolder.nameOtherMsg.setText(msg.getSenderName());
             otherHolder.sendOtherDataMsg.setText(msg.getTimestamp().toString());
             otherHolder.textOtherMsg.setText(msg.getContent());
+            otherHolder.textOtherMsg.setVisibility(View.VISIBLE);
+            otherHolder.imgOtherMsg.setVisibility(View.GONE);
+
+            if(msg.getContent()==null&&msg.getImgSourceId()!=null)
+            {
+               //text gone image not gone
+                otherHolder.textOtherMsg.setVisibility(View.GONE);
+                otherHolder.imgOtherMsg.setImageResource(msg.getImgSourceId());
+                otherHolder.imgOtherMsg.setVisibility(View.VISIBLE);
+
+            }
+            //放下边
+            if(msg.getContent()!=null && msg.getImgSourceId()!=null)
+            {
+                otherHolder.imgOtherMsg.setImageResource(msg.getImgSourceId());
+                otherHolder.imgOtherMsg.setVisibility(View.VISIBLE);
+
+            }
+
         } else if (holder instanceof YouViewHolder) {
+            //默认有文字，无图片
             YouViewHolder youHolder = (YouViewHolder) holder;
             youHolder.iconYouMsg.setImageResource(msg.getIconId());
             youHolder.nameYouMsg.setText(msg.getSenderName());
             youHolder.sendYouDataMsg.setText(msg.getTimestamp().toString());
             youHolder.textYouMsg.setText(msg.getContent());
+            youHolder.textYouMsg.setVisibility(View.VISIBLE);
+            youHolder.imgYouMsg.setVisibility(View.GONE);
+
+            //只有图片
+            if(msg.getContent()==null&&msg.getImgSourceId()!=null)
+            {
+               //text gone image not gone
+                youHolder.textYouMsg.setVisibility(View.GONE);
+                youHolder.imgYouMsg.setImageResource(msg.getImgSourceId());
+                youHolder.imgYouMsg.setVisibility(View.VISIBLE);
+
+            }
+            //图片和信息都有
+            if(msg.getContent()!=null && msg.getImgSourceId()!=null)
+            {
+                //text not gone image not gone
+              youHolder.imgYouMsg.setImageResource(msg.getImgSourceId());
+              youHolder.imgYouMsg.setVisibility(View.VISIBLE);
+
+            }
         } else {
             throw new IllegalArgumentException();
         }
@@ -106,6 +150,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView nameYouMsg;
         TextView sendYouDataMsg;
         TextView textYouMsg;
+        ImageView imgYouMsg;
 
         public YouViewHolder(View itemView) {
             super(itemView);
@@ -113,6 +158,8 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             nameYouMsg = itemView.findViewById(R.id.nameYouMsg);
             sendYouDataMsg = itemView.findViewById(R.id.sendYouDataMsg);
             textYouMsg = itemView.findViewById(R.id.textYouMsg);
+            imgYouMsg = itemView.findViewById(R.id.imgYouMsg);
+
         }
     }
 
@@ -122,6 +169,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView nameOtherMsg;
         TextView sendOtherDataMsg;
         TextView textOtherMsg;
+        ImageView imgOtherMsg;
 
         public OtherViewHolder(View itemView) {
             super(itemView);
@@ -129,6 +177,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             nameOtherMsg = itemView.findViewById(R.id.nameOtherMsg);
             sendOtherDataMsg = itemView.findViewById(R.id.sendOtherDataMsg);
             textOtherMsg = itemView.findViewById(R.id.textOtherMsg);
+            imgOtherMsg=itemView.findViewById(R.id.imgOtherMsg);
         }
     }
 }

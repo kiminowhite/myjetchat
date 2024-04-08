@@ -93,7 +93,7 @@
             android:layout_height="20dp"
 
             android:text="5"
-            android:background="@drawable/baseline_call_24"
+            android:background="@drawable/baseline_camera_alt_24"
             app:layout_constraintStart_toEndOf="@id/button4"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="25dp"

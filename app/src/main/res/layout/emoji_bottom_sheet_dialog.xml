@@ -6,7 +6,31 @@
     android:padding="16dp">
 
 
+    <!-- 按钮布局 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <!-- 第一个按钮 -->
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Emoji"
+            android:layout_marginRight="3dp"/>
+
+        <!-- 第二个按钮 -->
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stickers"
+            android:layout_marginLeft="3dp"/>
+
+    </LinearLayout>
     <!-- Add more views here as needed -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/emojis"

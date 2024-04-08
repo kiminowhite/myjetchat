@@ -7,25 +7,33 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.knw.myjetchat.MainActivity;
 import com.knw.myjetchat.R;
-import com.knw.myjetchat.ui.EmojiAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmojiBottomSheetDialogFragment extends BottomSheetDialogFragment implements EmojiAdapter.OnEmojiClickListener{
 
+
+ /*   @Override
+    public void onCreate( Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme); // 应用自定义的 Dialog 样式
+    }
+
+  */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 创建并返回对话框的视图
         View view = inflater.inflate(R.layout.emoji_bottom_sheet_dialog, container, false);
           RecyclerView emojiRecyclerView = view.findViewById(R.id.emojis);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+      //  LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 10);
         emojiRecyclerView.setLayoutManager(layoutManager);
         List<String> emojiList = new ArrayList<>();
         emojiList.add("\uD83D\uDE00"); // 😄
