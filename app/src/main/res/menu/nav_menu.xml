@@ -12,6 +12,11 @@
                    android:id="@+id/group2"
                    android:icon="@drawable/baseline_3p_24"
                    android:title="タロタロス" />
+               <item
+                   android:id="@+id/group3"
+                   android:icon="@drawable/baseline_3p_24"
+                   android:title="P5" />
+
            </group>
        </menu>
     </item>

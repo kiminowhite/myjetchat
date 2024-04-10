@@ -2,8 +2,13 @@ package com.knw.myjetchat.ui.message;
 
 
 
+
+
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.knw.myjetchat.MainActivity;
 import com.knw.myjetchat.MyApplication;
 import com.knw.myjetchat.ProfileActivity;
@@ -21,6 +27,7 @@ import com.knw.myjetchat.logic.model.User;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -117,7 +124,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             youHolder.textYouMsg.setVisibility(View.VISIBLE);
             youHolder.imgYouMsg.setVisibility(View.GONE);
 
-            //只有图片
+            //只有图片表情包
             if(msg.getContent()==null&&msg.getImgSourceId()!=null)
             {
                //text gone image not gone
@@ -134,6 +141,16 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
               youHolder.imgYouMsg.setVisibility(View.VISIBLE);
 
             }
+            //相册发送
+            if(msg.getContent()==null&&msg.getImgSourceId()==null&&msg.getImagePath()!=null)
+            {
+
+                youHolder.textYouMsg.setVisibility(View.GONE);
+                System.out.println("测试测试测试"+msg.getImagePath());
+                Glide.with(youHolder.itemView.getContext()).load(new File(msg.getImagePath())).into(youHolder.imgYouMsg);
+                youHolder.imgYouMsg.setVisibility(View.VISIBLE);
+
+            }
         } else {
             throw new IllegalArgumentException();
         }
@@ -144,7 +161,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return msgList.size();
     }
 
-    static class YouViewHolder extends RecyclerView.ViewHolder {
+    static public class YouViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView iconYouMsg;
         TextView nameYouMsg;
@@ -163,7 +180,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    static class OtherViewHolder extends RecyclerView.ViewHolder {
+    static public class OtherViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView iconOtherMsg;
         TextView nameOtherMsg;

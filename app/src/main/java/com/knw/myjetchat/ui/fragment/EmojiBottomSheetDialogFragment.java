@@ -112,6 +112,8 @@ public class EmojiBottomSheetDialogFragment extends BottomSheetDialogFragment im
     public List<Integer> initiStickerIdList(List<Integer> stickerIdList)
     {
         stickerIdList.add(R.drawable.sticker);
+        stickerIdList.add(R.drawable.soyo);
+        stickerIdList.add(R.drawable.mitsuru);
         stickerIdList.add(R.drawable.akihiko);
         stickerIdList.add(R.drawable.aragaki);
         stickerIdList.add(R.drawable.yukari);

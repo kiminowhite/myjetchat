@@ -1,9 +1,12 @@
 package com.knw.myjetchat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -11,14 +14,20 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +35,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,10 +52,12 @@ import com.knw.myjetchat.logic.model.Group;
 import com.knw.myjetchat.logic.model.Msg;
 import com.knw.myjetchat.logic.model.User;
 import com.knw.myjetchat.ui.fragment.AtBottomSheetDialogFragment;
+import com.knw.myjetchat.ui.fragment.EmojiAndStickerFragment;
 import com.knw.myjetchat.ui.fragment.EmojiBottomSheetDialogFragment;
 import com.knw.myjetchat.ui.message.MsgAdapter;
 
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -58,16 +73,16 @@ import java.util.stream.Collectors;
 //资料要根据是不是用户本人修改悬浮文本，实现了，但是没有灵活搜信息
 //目前来说，没有用viewmodel，后面要慢慢用上
 
-//需要实现聊天框stiker发图片，文件读取用协程
-
+//uri修改，存path，转成uri展示
+//，文件读取用协程 调整layout
 public class MainActivity extends AppCompatActivity {
-    private  final  List<Msg> msgList = new ArrayList<Msg>();
+    private final List<Msg> msgList = new ArrayList<Msg>();
     private String fileGroupName;
 
     private List<Msg> initMsg() {
-        Msg msg1 = new Msg("已经很困了吧？", Msg.TYPE_RECEIVED, R.drawable.aiges, new Date(), "アイギス", null);
-        Msg msg2 = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", R.drawable.aiges);
-        Msg msg3 = new Msg("从此以后也会一直守护你", Msg.TYPE_RECEIVED, R.drawable.aiges, new Date(), "アイギス", R.drawable.leader);
+        Msg msg1 = new Msg("已经很困了吧？", Msg.TYPE_RECEIVED, R.drawable.aiges, new Date(), "アイギス", null,null);
+        Msg msg2 = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", R.drawable.aiges,null);
+        Msg msg3 = new Msg("从此以后也会一直守护你", Msg.TYPE_RECEIVED, R.drawable.aiges, new Date(), "アイギス", R.drawable.leader,null);
      /*   Msg msg2= new Msg("我爱蛋白粉",Msg.TYPE_RECEIVED,R.drawable.akihiko,new Date(),"明彦");
         Msg msg3=new Msg("...",Msg.TYPE_RECEIVED,R.drawable.aragaki,new Date(),"荒垣");
         Msg msg4=new Msg("来，该吃饭了",Msg.TYPE_RECEIVED,R.drawable.fuuka,new Date(),"風花");
@@ -83,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         msgList.add(msg2);
         msgList.add(msg3);
 
-return  msgList;
+        return msgList;
     }
 
     @Override
@@ -141,34 +156,31 @@ return  msgList;
 
 
 //多线程
- Thread thread = new Thread(new Runnable() {
-    @Override
-    public void run() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-        SharedPreferences prefs = getSharedPreferences(fileGroupName, Context.MODE_PRIVATE);
-        Map<String, ?> allEntries = prefs.getAll();
-        boolean b = allEntries.isEmpty();
+                SharedPreferences prefs = getSharedPreferences(fileGroupName, Context.MODE_PRIVATE);
+                Map<String, ?> allEntries = prefs.getAll();
+                boolean b = allEntries.isEmpty();
 
-        if (allEntries.isEmpty()) {
-            // SharedPreferences文件为空，即文件不存在
-            initMsg();
-            System.out.println("初始化！");
-        } else {
-            // SharedPreferences文件不为空，文件存在且包含键值对
-            Gson gson = new Gson();
-            Type listType = new TypeToken<List<Msg>>() {
-            }.getType();
-            String json = prefs.getString("msgList", "");
-            List<Msg> loadmsgList = gson.fromJson(json, listType);
-            msgList.addAll(loadmsgList);
-            System.out.println("已经读取成功！");
-        }
-    }
-});
+                if (allEntries.isEmpty()) {
+                    // SharedPreferences文件为空，即文件不存在
+                    initMsg();
+                    System.out.println("初始化！");
+                } else {
+                    // SharedPreferences文件不为空，文件存在且包含键值对
+                    Gson gson = new Gson();
+                    Type listType = new TypeToken<List<Msg>>() {
+                    }.getType();
+                    String json = prefs.getString("msgList", "");
+                    List<Msg> loadmsgList = gson.fromJson(json, listType);
+                    msgList.addAll(loadmsgList);
+                    System.out.println("已经读取成功！");
+                }
+            }
+        });
         thread.start();
-
-
-
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -176,13 +188,27 @@ return  msgList;
         messagesRecyclerView.setLayoutManager(layoutManager);
         MsgAdapter adapter = new MsgAdapter(msgList);
         messagesRecyclerView.setAdapter(adapter);
+
+
+        EditText inpuText = findViewById((R.id.inputText));
+        inpuText.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                layoutView.setVisibility(View.GONE);
+                return false;
+            }
+        });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                layoutView.setVisibility(View.GONE);
                 EditText inputText = findViewById(R.id.inputText);
                 String content = inputText.getText().toString();
                 if (!content.isEmpty()) {
-                    Msg msg = new Msg(content, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", null);
+                    Msg msg = new Msg(content, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", null,null);
                     // 添加新消息到msgList
                     msgList.add(msg);
 
@@ -264,22 +290,36 @@ return  msgList;
         });
 
         //emoji调出
-        Button button1 = findViewById(R.id.button1);
-        button1.setOnClickListener(new View.OnClickListener() {
+        Button picture = findViewById(R.id.picture);
+        picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EmojiBottomSheetDialogFragment emojiBottomSheetDialogFragment = new EmojiBottomSheetDialogFragment();
-                emojiBottomSheetDialogFragment.show(getSupportFragmentManager(), emojiBottomSheetDialogFragment.getTag());
+                //隐藏输入法
+                hideKeyboard();
+                //重新构建fragment
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.emojiandsticker, new EmojiAndStickerFragment());
+                transaction.commit();
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                if (layoutView.getVisibility() == View.VISIBLE) {
+                    layoutView.setVisibility(View.GONE);
+                } else {
+                    layoutView.setVisibility(View.VISIBLE);
+                }
+
             }
         });
         //@功能
-        Button button2 = findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
+        Button atcontact = findViewById(R.id.atcontact);
+        atcontact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ArrayList<String> atlist = new ArrayList<>();
 
+                ArrayList<String> atlist = new ArrayList<>();
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                layoutView.setVisibility(View.GONE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     atlist.addAll(msgList.stream()
                             .map(Msg::getSenderName)
@@ -293,26 +333,34 @@ return  msgList;
             }
         });
         //呼出系统相册
-        Button button3 = findViewById(R.id.button3);
-        button3.setOnClickListener(new View.OnClickListener() {
+        Button album = findViewById(R.id.album);
+        album.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                layoutView.setVisibility(View.GONE);
                 // 打开文件选择器
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+           //     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            //    intent.addCategory(Intent.CATEGORY_OPENABLE);
                 // 指定只显示图片
-                intent.setType("image/*");
+        //        intent.setType("image/*");
                 //   startActivity(intent);
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
                 startActivityForResult(intent, 1);
-                //做图片信息发送功能
+                //图片信息发送功能
             }
         });
         //使用地图
-        Button button4 = findViewById(R.id.button4);
-        button4.setOnClickListener(new View.OnClickListener() {
+        Button map = findViewById(R.id.map);
+        map.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Uri geoLocation = Uri.parse("geo:35.6895,139.6917?q=Akihabara");
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                layoutView.setVisibility(View.GONE);
+                Uri geoLocation = Uri.parse("geo:35.6895,139.6917");
                 Intent intent = new Intent(Intent.ACTION_VIEW, geoLocation);
                 intent.setPackage("com.google.android.apps.maps");
                 if (intent.resolveActivity(getPackageManager()) != null) {
@@ -325,13 +373,19 @@ return  msgList;
             }
 
         });
-        Button button5 = findViewById(R.id.button5);
-        button5.setOnClickListener(new View.OnClickListener() {
+
+
+        Button camera = findViewById(R.id.camera);
+        camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                layoutView.setVisibility(View.GONE);
+                // 创建File对象，用于存储拍照后的图片
+
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-// 确保设备上有应用程序可以处理该 Intent
+          // 确保设备上有应用程序可以处理该 Intent
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     // 启动相机应用程序，并等待结果返回
                     startActivityForResult(takePictureIntent, 2);
@@ -344,10 +398,12 @@ return  msgList;
         //去处理图片后续逻辑
 
         //录音按钮
-        Button button6 = findViewById(R.id.button6);
-        button6.setOnClickListener(new View.OnClickListener() {
+        Button voice = findViewById(R.id.voice);
+        voice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                View layoutView = findViewById(R.id.emojiandstickerlayout);
+                layoutView.setVisibility(View.GONE);
                 // 创建一个 Intent，用于启动录音应用程序
                 Intent recordAudioIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
 
@@ -404,22 +460,24 @@ return  msgList;
         EditText editText = findViewById(R.id.inputText);
         editText.append(emoji);
     }
-public  void addStickerMsg(Integer stickerId)
-{
-    LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    RecyclerView messagesRecyclerView = findViewById(R.id.messages);
-    messagesRecyclerView.setLayoutManager(layoutManager);
-    MsgAdapter adapter = new MsgAdapter(msgList);
-    messagesRecyclerView.setAdapter(adapter);
-    //发送图片
-    Msg msg = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", stickerId);
-    msgList.add(msg);
-    if (adapter != null) {
-        adapter.notifyItemInserted(msgList.size() - 1);
+
+    public void addStickerMsg(Integer stickerId) {
+        View layoutView = findViewById(R.id.emojiandstickerlayout);
+       layoutView.setVisibility(View.GONE);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+        messagesRecyclerView.setLayoutManager(layoutManager);
+        MsgAdapter adapter = new MsgAdapter(msgList);
+        messagesRecyclerView.setAdapter(adapter);
+        //发送图片
+        Msg msg = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", stickerId,null);
+        msgList.add(msg);
+        if (adapter != null) {
+            adapter.notifyItemInserted(msgList.size() - 1);
+        }
+        messagesRecyclerView = findViewById(R.id.messages);
+        messagesRecyclerView.scrollToPosition(msgList.size() - 1);
     }
-     messagesRecyclerView = findViewById(R.id.messages);
-    messagesRecyclerView.scrollToPosition(msgList.size() - 1);
-}
 
     public void addAtToEditText(String at) {
         EditText editText = findViewById(R.id.inputText);
@@ -428,7 +486,6 @@ public  void addStickerMsg(Integer stickerId)
     }
 
 
-/*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -436,37 +493,82 @@ public  void addStickerMsg(Integer stickerId)
             // 其他 requestCode 的处理...
             case 1:
                 if (resultCode == Activity.RESULT_OK && data != null) {
+
                     Uri uri = data.getData();
                     if (uri != null) {
-                        // 将选择的图片显示
-                        Bitmap bitmap = getBitmapFromUri(uri);
-                        imageView.setImageBitmap(bitmap);
+                        String imagePath = getAbsolutePathFromUri(uri);
+                        //发送新信息
+                        Msg msg = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", null,imagePath);
+                        msgList.add(msg);
+                        MsgAdapter adapter = new MsgAdapter(msgList);
+                        if (adapter != null) {
+                            adapter.notifyItemInserted(msgList.size() - 1);
+                        }
+                        RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+                        messagesRecyclerView.scrollToPosition(msgList.size() - 1);
+
+
+
+
+
+
                     }
+
+                }
+                break;
+            case 2:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // 处理 requestCode 为 2 的情况
+                    Uri uri = data.getData();
+                  if(uri!=null) {
+                      String imagePath = getAbsolutePathFromUri(uri);
+
+                      Msg msg = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", null, imagePath);
+                      msgList.add(msg);
+                      MsgAdapter adapter = new MsgAdapter(msgList);
+                      if (adapter != null) {
+                          adapter.notifyItemInserted(msgList.size() - 1);
+                      }
+                      RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+                      messagesRecyclerView.scrollToPosition(msgList.size() - 1);
+                  }
+
                 }
                 break;
         }
+
     }
-    private Bitmap getBitmapFromUri(Uri uri) {
-        try {
-            ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
-            if (parcelFileDescriptor != null) {
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-                parcelFileDescriptor.close();
-                return bitmap;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+
+    private String getAbsolutePathFromUri(Uri uri) {
+        String absolutePath = null;
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndex(projection[0]);
+            absolutePath = cursor.getString(columnIndex);
+            cursor.close();
         }
-        return null;
+        return absolutePath;
     }
-
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            View view = getCurrentFocus();
+            if (view != null) {
+                // 检查输入法是否已经弹出
+                boolean isKeyboardVisible = imm.isActive(view);
+                if (isKeyboardVisible) {
+                    // 如果输入法已经弹出，则隐藏输入法
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        }
+    }
 }
 
- */
 
 
 
-}
 
 

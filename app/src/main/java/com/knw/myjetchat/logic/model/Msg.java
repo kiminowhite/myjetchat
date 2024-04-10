@@ -1,5 +1,7 @@
 package com.knw.myjetchat.logic.model;
 
+import android.net.Uri;
+
 import java.util.Date;
 
 //后续需要完善跳转个人信息页面，同时profile也要加上每个人的item
@@ -12,17 +14,20 @@ public class Msg {
 
     private Integer imgSourceId;
 
+   private String imagePath;
+
 
     public static final int TYPE_RECEIVED = 0;
     public static final int TYPE_SENT = 1;
 
-    public Msg(String content, int type, int iconId, Date timestamp, String senderName,Integer imgSourceId) {
+    public Msg(String content, int type, int iconId, Date timestamp, String senderName,Integer imgSourceId,String imagePath) {
         this.content = content;
         this.type = type;
         this.iconId = iconId;
         this.timestamp = timestamp;
         this.senderName = senderName;
         this.imgSourceId = imgSourceId;
+        this.imagePath=imagePath;
     }
 
     public String getContent() {
@@ -67,6 +72,9 @@ public class Msg {
 
     public Integer getImgSourceId(){return imgSourceId;}
     public void setImgSourceId(Integer imgSourceId){this.imgSourceId=imgSourceId;}
+
+   public String getImagePath(){return  imagePath;};
+    public  void  setImagePath(String imagePath){this.imagePath=imagePath;}
 
 
     }

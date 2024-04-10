@@ -19,7 +19,7 @@
             android:maxLines="1"
             tools:ignore="MissingConstraints" />
         <Button
-            android:id="@+id/button6"
+            android:id="@+id/voice"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="20dp"
@@ -27,6 +27,18 @@
             android:background="@drawable/baseline_keyboard_voice_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/emojiandstickerlayout"
+        android:layout_height="200dp"
+        android:layout_width="match_parent"
+        android:visibility="gone">
+        <FrameLayout
+            android:id="@+id/emojiandsticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints"
+           ></FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +49,7 @@
 
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/picture"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
@@ -51,50 +63,50 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/atcontact"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:text="2"
             android:background="@drawable/baseline_alternate_email_24"
-            app:layout_constraintStart_toEndOf="@id/button1"
+            app:layout_constraintStart_toEndOf="@id/picture"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
             />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/album"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@drawable/baseline_collections_24"
 
             android:text="3"
-            app:layout_constraintStart_toEndOf="@id/button2"
+            app:layout_constraintStart_toEndOf="@id/atcontact"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
             />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/map"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@drawable/baseline_location_on_24"
             android:text="4"
-            app:layout_constraintStart_toEndOf="@id/button3"
+            app:layout_constraintStart_toEndOf="@id/album"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
             />
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/camera"
             android:layout_width="20dp"
             android:layout_height="20dp"
 
             android:text="5"
             android:background="@drawable/baseline_camera_alt_24"
-            app:layout_constraintStart_toEndOf="@id/button4"
+            app:layout_constraintStart_toEndOf="@id/map"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
