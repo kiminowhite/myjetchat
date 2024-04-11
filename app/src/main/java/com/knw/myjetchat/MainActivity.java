@@ -80,6 +80,7 @@ import java.util.stream.Collectors;
 
 //资料要根据是不是用户本人修改悬浮文本，实现了，但是没有灵活搜信息
 //目前来说，没有用viewmodel，后面要慢慢用上
+//还没写权限许可判断！！！
 
 //uri修改，存path，转成uri展示
 //，文件读取用协程 调整layout
@@ -388,11 +389,23 @@ public class MainActivity extends AppCompatActivity {
 
         Button camera = findViewById(R.id.camera);
         camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View layoutView = findViewById(R.id.emojiandstickerlayout);
-                layoutView.setVisibility(View.GONE);
-                // 创建File对象，用于存储拍照后的图片
+                                      @Override
+                                      public void onClick(View v) {
+                                          View layoutView = findViewById(R.id.emojiandstickerlayout);
+                                          layoutView.setVisibility(View.GONE);
+
+                                          if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                              // 如果没有相机权限，则请求相机权限
+                                              ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 3);
+                                          } else {
+                                              // 如果已经有相机权限，则打开相机
+                                              openCamera();
+                                          }
+
+
+                                      }});
+
+                                      // 创建File对象，用于存储拍照后的图片
 
    /*  *           Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -409,24 +422,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             */
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
-                                getApplicationContext().getPackageName() + ".provider",
-                                photoFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(takePictureIntent, 2);
-                    }
-                }
 
-        }});
+
+
         //去处理图片后续逻辑
 
         //录音按钮
@@ -566,6 +564,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 3) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 如果用户授予了相机权限，则打开相机
+                openCamera();
+            } else {
+                // 如果用户拒绝了相机权限，显示提示消息或执行其他操作
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 
     private String getAbsolutePathFromUri(Uri uri) {
@@ -627,6 +638,25 @@ public class MainActivity extends AppCompatActivity {
         //    Toast.makeText(this, "Image added to gallery", Toast.LENGTH_SHORT).show();
         } else {
     //        Toast.makeText(this, "Image file not found", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private  void openCamera()
+    {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
+                        getApplicationContext().getPackageName() + ".provider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, 2);
+            }
         }
     }
 }
