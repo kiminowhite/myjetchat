@@ -1,11 +1,14 @@
 package com.knw.myjetchat;
 
+import  android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,6 +38,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -61,13 +66,16 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+
 
 
 //资料要根据是不是用户本人修改悬浮文本，实现了，但是没有灵活搜信息
@@ -77,7 +85,10 @@ import java.util.stream.Collectors;
 //，文件读取用协程 调整layout
 public class MainActivity extends AppCompatActivity {
     private final List<Msg> msgList = new ArrayList<Msg>();
+
     private String fileGroupName;
+    private String currentPhotoPath;
+    private ImageView imageView;
 
     private List<Msg> initMsg() {
         Msg msg1 = new Msg("已经很困了吧？", Msg.TYPE_RECEIVED, R.drawable.aiges, new Date(), "アイギス", null,null);
@@ -383,18 +394,39 @@ public class MainActivity extends AppCompatActivity {
                 layoutView.setVisibility(View.GONE);
                 // 创建File对象，用于存储拍照后的图片
 
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+   /*  *           Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
           // 确保设备上有应用程序可以处理该 Intent
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     // 启动相机应用程序，并等待结果返回
                     startActivityForResult(takePictureIntent, 2);
+
+                    //registerForActivityResult
+
                 } else {
                     // 如果没有安装相机应用程序，显示一个提示信息给用户
                     Toast.makeText(v.getContext(), "没有可用的相机应用程序", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+            */
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
+                                getApplicationContext().getPackageName() + ".provider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, 2);
+                    }
+                }
+
+        }});
         //去处理图片后续逻辑
 
         //录音按钮
@@ -517,22 +549,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case 2:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    // 处理 requestCode 为 2 的情况
-                    Uri uri = data.getData();
-                  if(uri!=null) {
-                      String imagePath = getAbsolutePathFromUri(uri);
-
-                      Msg msg = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", null, imagePath);
-                      msgList.add(msg);
-                      MsgAdapter adapter = new MsgAdapter(msgList);
-                      if (adapter != null) {
-                          adapter.notifyItemInserted(msgList.size() - 1);
-                      }
-                      RecyclerView messagesRecyclerView = findViewById(R.id.messages);
-                      messagesRecyclerView.scrollToPosition(msgList.size() - 1);
-                  }
-
+                if (resultCode == Activity.RESULT_OK ) {
+         addImageToGallery(currentPhotoPath);
+                    //临时文件!
+            //        Toast.makeText(this, "Photo saved: " + currentPhotoPath, Toast.LENGTH_SHORT).show();
+                    Msg msg = new Msg(null, Msg.TYPE_SENT, R.drawable.leader, new Date(), "結城　理", null,currentPhotoPath);
+                    msgList.add(msg);
+                    MsgAdapter adapter = new MsgAdapter(msgList);
+                    if (adapter != null) {
+                        adapter.notifyItemInserted(msgList.size() - 1);
+                    }
+                    RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+                    messagesRecyclerView.scrollToPosition(msgList.size() - 1);
                 }
                 break;
         }
@@ -565,7 +593,44 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void addImageToGallery(String imagePath) {
+        File imageFile = new File(imagePath);
+        if (imageFile.exists()) {
+            // 将文件添加到系统媒体库中
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.MediaColumns.DATA, imageFile.getAbsolutePath());
+            getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+            // 发送广播通知系统相册有新的媒体文件可用
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            mediaScanIntent.setData(Uri.fromFile(imageFile));
+            sendBroadcast(mediaScanIntent);
+
+        //    Toast.makeText(this, "Image added to gallery", Toast.LENGTH_SHORT).show();
+        } else {
+    //        Toast.makeText(this, "Image file not found", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
+
 
 
 
